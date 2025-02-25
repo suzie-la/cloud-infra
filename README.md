@@ -1,5 +1,4 @@
-# CD12352 - Infrastructure as Code Project Solution
-# MENGUOPE FONTANG Suzie Laure
+# Infrastructure as Code Project
 
 ## Structure
 The project is made up of two main stacks:
@@ -9,7 +8,7 @@ The project is made up of two main stacks:
 The bucket creation stack allow us to easily launch a s3 bucket that will store our static files.
 
 The overall project directory structure is as follows:
-udagram-project
+cloud-infra
 ├── bucket
 │   ├── bucket.yml
 │   └── bucket-parameters.json
@@ -24,12 +23,12 @@ udagram-project
 ├── scripts
 │   └── run-stack.sh
 ├── README.md
-└── udagram-architecture.png
+└── architecture.png
 
 ## Spin up instructions
 To spin up the architecture, get into the project folder
 ```
-cd udagram-project
+cd cloud-infra
 ```
 1- Create the bucket and upload the application static files into it
 Create the s3 bucket using the command:
@@ -64,8 +63,7 @@ Once the infrastructure is up you can go to the app using the Loadbalancer DNS. 
 ```
 aws cloudformation describe-stacks --stack-name udagram-web --query "Stacks[0].Outputs[*].[OutputKey,OutputValue]" --output table
 ```
-You will get the index.html page displaying the message: `It works! Udagram, Udacity`
-Working Test Link: http://udagra-WebAp-hcOuc33UwxyC-136126565.us-east-2.elb.amazonaws.com
+You will get the index.html page displaying a simple message
 
 ## Tear down instructions
 To tear down the infrastructure, use the following steps

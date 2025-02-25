@@ -1,0 +1,67 @@
+Description: >
+  Suzie Fontang - Udagram Project
+
+Parameters:
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+  
+  UdagramBucketName:
+    Description: Unique name of the S3 bucket where stores the files to deploy
+    Type: String
+    Default: s3-bucket
+
+Resources:
+
+  UdagramBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete # Prevent accidental deletion
+    Properties:
+      BucketName: !Ref UdagramBucketName
+#      AccessControl: PublicRead
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Status: "Enabled"
+            NoncurrentVersionExpirationInDays: 10  
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      # OwnershipControls:
+      #   Rules:
+      #   - ObjectOwnership: BucketOwnerPreferred
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        IgnorePublicAcls: false
+        BlockPublicPolicy: false
+        RestrictPublicBuckets: false
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref UdagramBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          # Public read access for objects
+          - Sid: PublicReadGetObject
+            Effect: Allow
+            Principal: '*'
+            Action:
+              - 's3:GetObject'
+            Resource: !Join ['', ['arn:aws:s3:::', !Ref 'UdagramBucket', '/*']]
+    
+
+Outputs: 
+  MyBucket:
+    Value: !Ref UdagramBucket
+    Description: Udagram bucket that stores web files
+    Export:
+      Name: !Sub ${EnvironmentName}-Bucket
+
+  MyBucketARN:
+    Value: !GetAtt UdagramBucket.Arn
+    Export:
+      Name: !Sub ${EnvironmentName}-BucketARN
